@@ -15,8 +15,8 @@ let currentPhotoUrl = "";
 
 new QRCode(qrContainer, {
   text: mobileAppUrl,
-  width: 100,
-  height: 100
+  width: 120,
+  height: 120
 });
 
 async function fetchPhotoHistory() {
