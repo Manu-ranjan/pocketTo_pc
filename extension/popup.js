@@ -169,7 +169,7 @@ copyBtn.addEventListener("click", () => {
 });
 
 // 1. Initial check when popup opens
-fetchLatestPhoto();
+fetchPhotoHistory();
 
 // 2. Continuous check every 2 seconds for fresh photo updates
 setInterval(fetchLatestPhoto, 2000);
