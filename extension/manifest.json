@@ -1,0 +1,10 @@
+{
+    "manifest_version":3,
+    "name":"Phone to Pc",
+    "version":"1.0",
+    "description":"Scan QR code to upload photos from your phone directly to pc clipboard.",
+    "permissions": ["storage", "clipboardWrite", "activeTab"],
+    "action": {
+        "default_popup":"popup.html"
+    }
+}

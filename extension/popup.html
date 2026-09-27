@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phone to PC</title>
+
+  <style>
+    body {
+      width: 280px;
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+    }
+    h3 { margin: 0 0 10px 0; color: #38bdf8; }
+    #qrcode { display: flex; justify-content: center; margin-bottom: 12px; }
+    .preview-box {
+      width: 100%;
+      height: 160px;
+      border: 2px dashed #334155;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 12px;
+      background: #1e293b;
+    }
+    #img-preview { width: 100%; height: 100%; object-fit: contain; display: none; }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #copy-btn { background: #22c55e; color: #052e16; }
+    #copy-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    #toast { margin-top: 8px; font-size: 12px; color: #38bdf8; min-height: 16px; }
+
+    /* History Log Styles */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      border-top: 1px solid #334155;
+      padding-top: 10px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .clear-all-btn {
+      background: transparent;
+      color: #ef4444;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      width: auto;
+      padding: 2px 6px;
+    }
+    .history-list {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .history-item {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #334155;
+      cursor: pointer;
+    }
+    .history-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .delete-item-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(239, 68, 68, 0.85);
+      color: white;
+      border: none;
+      border-bottom-left-radius: 4px;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      line-height: 14px;
+      cursor: pointer;
+      padding: 0;
+      text-align: center;
+    }
+  </style>
+
+  <script src="qrcode.min.js"></script>
+</head>
+<body>
+
+  <h3>Phone to PC Clipboard</h3>
+  <div id="qrcode"></div>
+
+  <div class="preview-box">
+    <span id="placeholder-text" style="color: #64748b; font-size: 12px;">No photo received yet</span>
+    <img id="img-preview" />
+  </div>
+
+  <button id="copy-btn" disabled>Copy Image to Clipboard</button>
+  <div id="toast"></div>
+
+  <!-- Photo History Section -->
+  <div class="history-header">
+    <span>Recent Photos (Last 5)</span>
+    <button class="clear-all-btn" id="clear-all-btn">Clear All</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

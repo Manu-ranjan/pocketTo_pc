@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snap & Upload</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .upload-btn {
+      background: #22c55e;
+      color: #052e16;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    input[type="file"] { display: none; }
+    #status { margin-top: 20px; font-size: 15px; color: #38bdf8; min-height: 24px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <h2>📸 Snap Photo to Laptop</h2>
+  <p style="color: #94a3b8; font-size: 14px;">Take a photo and it will appear on your laptop clipboard instantly!</p>
+
+  <label class="upload-btn">
+    📷 Take Photo
+    <input type="file" id="cameraInput" accept="image/*" capture="environment">
+  </label>
+  
+  <div id="status"></div>
+
+  <script>
+    const SUPABASE_URL = "https://wryobpgyzemubrucejif.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_X_l63BT4zYNy5yyd_0X2Iw_LHJNupcG";
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const input = document.getElementById('cameraInput');
+    const status = document.getElementById('status');
+
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      status.textContent = "Uploading photo to cloud...";
+
+      const fileName = `photo_${Date.now()}.jpg`;
+
+      const { data: storageData, error: storageError } = await supabaseClient.storage
+        .from('uploads')
+        .upload(fileName, file);
+
+      if (storageError) {
+        status.textContent = "Upload failed: " + storageError.message;
+        console.error(storageError);
+        return;
+      }
+
+      const { data: urlData } = supabaseClient.storage.from('uploads').getPublicUrl(fileName);
+      const publicUrl = urlData.publicUrl;
+
+      const { error: dbError } = await supabaseClient
+        .from('latest_photo')
+        .insert([{url: publicUrl}]);
+
+      if (dbError) {
+        status.textContent = "DB Sync failed: " + dbError.message;
+        console.error(dbError);
+      } else {
+        status.textContent = "Sent!";
+      }
+    });
+  </script>
+</body>
+</html>
